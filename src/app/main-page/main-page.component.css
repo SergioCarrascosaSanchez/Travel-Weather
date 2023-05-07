@@ -1,0 +1,10 @@
+h1 {
+  margin-top: 8%;
+  background-image: linear-gradient(to right, #ff9966, #ff5e62);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+h2 {
+  margin-bottom: 3%;
+}
