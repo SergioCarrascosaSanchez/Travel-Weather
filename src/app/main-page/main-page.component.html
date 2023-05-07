@@ -3,5 +3,10 @@
   <h2>
     Find out how the weather was like in the last few years before travelling!
   </h2>
-  <input type="text" placeholder="Type your next destiny...">
+  <input
+    [(ngModel)]="inputText"
+    (keydown.enter)="onSubmit()"
+    type="text"
+    placeholder="Type your next destiny..."
+  />
 </div>
