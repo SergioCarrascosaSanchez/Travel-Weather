@@ -28,20 +28,37 @@ h2 {
     "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
     "Segoe UI Symbol", "Noto Color Emoji";
   font-weight: 500;
-  color: rgba(237, 237, 237, 0.6);
+  color: rgb(243, 243, 243);
   margin: 0%;
 }
 
-input {
+input{
   background-color: transparent;
   border: none;
-  border: 2px solid rgb(255, 255, 247);
-  color: rgb(255, 255, 247);
-  font-size: 18px;
+  border: 2px solid rgb(243, 243, 243);
+  color: rgb(243, 243, 243);
+  font-size: 16px;
   padding: 10px;
-  width: 100%;
   border-radius: 15px;
   font-weight: 500;
+}
+
+button{
+  background-color: transparent;
+  border: 2px solid rgb(243, 243, 243);
+  color: rgb(243, 243, 243);
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 15px;
+  font-weight: 500;
+}
+
+button:hover{
+  border: 2px solid linear-gradient(to right, #ff9966, #ff5e62);
+  background-image: linear-gradient(to right, #ff9966, #ff5e62);
+  border: none;
+  color:rgb(30, 30, 32);
+  cursor: pointer;
 }
 
 :focus {

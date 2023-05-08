@@ -3,10 +3,15 @@
   <h2>
     Find out how the weather was like in the last few years before travelling!
   </h2>
-  <input
-    [(ngModel)]="inputText"
-    (keydown.enter)="onSubmit()"
-    type="text"
-    placeholder="Type your next destiny..."
-  />
+  <div class="input-container">
+    <input
+      [(ngModel)]="inputText"
+      type="text"
+      placeholder="Type your next destiny... Ex: Madrid, España"
+      style="grid-column: 1"
+    />
+    <input [(ngModel)]="initialDate" type="date" style="grid-column: 3" />
+    <input [(ngModel)]="finalDate" type="date" style="grid-column: 5" />
+    <button (click)="onSubmit()" style="grid-column: 7">Buscar</button>
+  </div>
 </div>

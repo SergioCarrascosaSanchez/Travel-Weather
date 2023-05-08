@@ -7,6 +7,8 @@ import { Component } from '@angular/core';
 })
 export class MainPageComponent {
   inputText: string = '';
+  initialDate: Date;
+  finalDate: Date;
 
   onSubmit() {
     console.log(this.inputText);
