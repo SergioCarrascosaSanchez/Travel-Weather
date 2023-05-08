@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { flagNames } from './flag-names';
+import { flagNames } from '../flag-names';
 
 @Component({
   selector: 'app-main-page',
