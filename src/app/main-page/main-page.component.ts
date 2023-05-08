@@ -10,13 +10,13 @@ export class MainPageComponent {
   inputCity: string = '';
   inputCountry: string = '';
   flagNames = flagNames;
-  initialDate: Date;
-  finalDate: Date;
+  startDate: Date;
+  endDate: Date;
 
   onSubmit() {
     console.log(this.inputCity);
     console.log(this.inputCountry);
-    console.log(this.initialDate);
-    console.log(this.finalDate);
+    console.log(this.startDate);
+    console.log(this.endDate);
   }
 }
