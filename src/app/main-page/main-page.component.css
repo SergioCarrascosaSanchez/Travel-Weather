@@ -11,5 +11,14 @@ h2 {
 
 .input-container {
   display: grid;
-  grid-template-columns: 44% 1% 21% 1% 21% 1% 11%;
+  grid-template-columns: 30% 14% 1% 21% 1% 21% 1% 11%;
+}
+
+.input-pair-left {
+  border: 2px 1px 1px 2px solid rgb(243, 243, 243);
+  border-radius: 10px 0 0 10px;
+}
+.input-pair-right {
+  border: 1px 2px 2px 1px solid rgb(243, 243, 243);
+  border-radius: 0 10px 10px 0;
 }

@@ -53,6 +53,16 @@ button{
   font-weight: 500;
 }
 
+select{
+  background-color: rgb(30, 30, 32);
+  border: 2px solid rgb(243, 243, 243);
+  color: rgb(243, 243, 243);
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 15px;
+  font-weight: 500;
+}
+
 button:hover{
   border: 2px solid linear-gradient(to right, #ff9966, #ff5e62);
   background-image: linear-gradient(to right, #ff9966, #ff5e62);
