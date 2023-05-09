@@ -1,5 +1,5 @@
-export const flagNames : Array<[string, string]> = [
-    ["🇪🇸", "Spain"],
-    ["🇲🇫", "France"],
-    ["🇮🇹", "Italy"]
+export const flagNames : Array<[string, string, string]> = [
+    ["🇪🇸", "España", "Spain"],
+    ["🇲🇫", "Francia", "France"],
+    ["🇮🇹", "Italia", "Italy"]
 ]

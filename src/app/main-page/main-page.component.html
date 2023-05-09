@@ -21,7 +21,7 @@
         Country
       </option>
       <option *ngFor="let flag of flagNames" [value]="flag[1]">
-        {{ flag[0] }} {{ flag[1] }}
+        {{ flag[0] }} {{ flag[2] }}
       </option>
     </select>
     <input [(ngModel)]="startDate" type="date" style="grid-column: 4" />
