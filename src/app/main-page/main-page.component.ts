@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { flagNames } from '../flag-names';
+import { DataService } from '../data.service';
 
 @Component({
   selector: 'app-main-page',
@@ -7,6 +8,8 @@ import { flagNames } from '../flag-names';
   styleUrls: ['./main-page.component.css'],
 })
 export class MainPageComponent {
+  constructor(private dataService: DataService) {}
+
   inputCity: string = '';
   inputCountry: string = '';
   flagNames = flagNames;
@@ -14,9 +17,15 @@ export class MainPageComponent {
   endDate: Date;
 
   onSubmit() {
-    console.log(this.inputCity);
-    console.log(this.inputCountry);
-    console.log(this.startDate);
-    console.log(this.endDate);
+    console.log(
+      this.dataService
+        .getData(
+          this.inputCity,
+          this.inputCountry,
+          this.startDate,
+          this.endDate
+        )
+        .subscribe((data) => console.log(data))
+    );
   }
 }
