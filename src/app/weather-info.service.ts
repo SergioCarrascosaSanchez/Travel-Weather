@@ -10,8 +10,8 @@ export class WeatherInfoService {
 
   getWeatherData(
     coordinates: Coordinates,
-    startDate: string,
-    endDate: string
+    startDate: Date,
+    endDate: Date
   ) {
     return this.http.get(
       `https://api.open-meteo.com/v1/forecast?latitude=${coordinates.latitude}&longitude=${coordinates.longitude}&timezone=GMT&start_date=${startDate}&end_date=${endDate}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,rain_sum,snowfall_sum `
