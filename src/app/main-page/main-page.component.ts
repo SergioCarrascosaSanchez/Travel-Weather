@@ -13,17 +13,18 @@ export class MainPageComponent {
   inputCity: string = '';
   inputCountry: string = '';
   flagNames = flagNames;
-  startDate: Date;
-  endDate: Date;
+  startDate: string;
+  endDate: string;
 
   onSubmit() {
+    console.log(typeof this.startDate)
     console.log(
       this.dataService
         .getData(
           this.inputCity,
           this.inputCountry,
-          this.startDate,
-          this.endDate
+          new Date(this.startDate),
+          new Date(this.endDate)
         )
         .subscribe((data) => console.log(data))
     );
