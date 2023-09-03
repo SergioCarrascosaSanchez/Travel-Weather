@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { flagNames } from '../flag-names';
-import { DataService } from '../data.service';
+import { flagNames } from './flag-names';
+import { WeatherService } from '../weather/weather-service/weather.service';
 
 @Component({
   selector: 'app-main-page',
@@ -8,7 +8,9 @@ import { DataService } from '../data.service';
   styleUrls: ['./main-page.component.css'],
 })
 export class MainPageComponent {
-  constructor(private dataService: DataService) {}
+  constructor(
+    private weatherService: WeatherService
+  ) {}
 
   inputCity: string = '';
   inputCountry: string = '';
@@ -17,16 +19,10 @@ export class MainPageComponent {
   endDate: string;
 
   onSubmit() {
-    console.log(typeof this.startDate)
-    console.log(
-      this.dataService
-        .getData(
-          this.inputCity,
-          this.inputCountry,
-          new Date(this.startDate),
-          new Date(this.endDate)
-        )
-        .subscribe((data) => console.log(data))
-    );
+    this.weatherService
+      .getWeatherData('', '', new Date(this.startDate), new Date(this.endDate))
+      .subscribe((resData) => {
+        console.log(resData.daily.temperature_2m_min);
+      });
   }
 }
