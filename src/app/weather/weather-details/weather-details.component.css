@@ -1,0 +1,48 @@
+div{
+  background: #252529;
+}
+
+.container {
+  background-color: #252529;
+  margin-top: 32px;
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.internalContainer {
+  border-radius: 10px;
+  background-color: #252529;
+  padding-top: 15px;
+  padding-left: 40px;
+  padding-right: 40px;
+}
+
+p,
+h1,
+img {
+  color: white;
+  background: #252529;
+}
+
+h1 {
+  font-size: 40px;
+}
+.min-temp {
+  color: rgba(255, 255, 255, 0.637);
+  background: #252529;
+}
+
+.flex-gap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  background: #252529;
+}
+
+.details-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 22px;
+ padding-bottom: 20px;
+}

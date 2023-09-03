@@ -1,0 +1,30 @@
+<div class="container">
+  <div class="internalContainer">
+    <div class="flex-gap">
+      <h1>
+        {{ weatherDetails.date.getDate() }}/{{ weatherDetails.date.getMonth() }}
+      </h1>
+      <img src="{{ weatherDetails.weatherImage }}" />
+    </div>
+    <div class="details-container">
+      <p>Temperatura máxima media {{ weatherDetails.maxTemperature }}°</p>
+      <p>
+        Temperatura máxima aparente media
+        {{ weatherDetails.maxApparentTemperature }}°
+      </p>
+      <p>Temperatura mínima media {{ weatherDetails.minTemperature }}°</p>
+      <p>
+        Temperatura mínima aparente media
+        {{ weatherDetails.minApparentTemperature }}°
+      </p>
+      <p>
+        Probabilidad de lluvia
+        {{ weatherDetails.rainProbability }}
+      </p>
+      <p>
+        Probabilidad de nieve
+        {{ weatherDetails.snowProbability }}°
+      </p>
+    </div>
+  </div>
+</div>
