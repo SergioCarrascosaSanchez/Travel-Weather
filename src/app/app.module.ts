@@ -5,11 +5,17 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MainPageComponent } from './main-page/main-page.component';
 import { HttpClientModule } from '@angular/common/http';
+import { WeatherCardComponent } from './weather/weather-card/weather-card.component';
+import { WeatherCardListComponent } from './weather/weather-card/weather-card-list/weather-card-list.component';
+import { WeatherDetailsComponent } from './weather/weather-details/weather-details.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    MainPageComponent
+    MainPageComponent,
+    WeatherCardComponent,
+    WeatherCardListComponent,
+    WeatherDetailsComponent
   ],
   imports: [
     BrowserModule,
