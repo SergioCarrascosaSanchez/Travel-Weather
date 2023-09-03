@@ -1,0 +1,8 @@
+<div class="weather-card">
+  <h2>{{ weatherInfo.date.getDate() }}/{{ weatherInfo.date.getMonth() }}</h2>
+  <img src="{{ weatherInfo.weatherImage }}" />
+  <p class="max-temp">
+    {{ weatherInfo.maxTemperature }}°
+    <span class="min-temp">{{ weatherInfo.minTemperature }}°</span>
+  </p>
+</div>
