@@ -8,6 +8,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { WeatherCardComponent } from './weather/weather-card/weather-card.component';
 import { WeatherCardListComponent } from './weather/weather-card/weather-card-list/weather-card-list.component';
 import { WeatherDetailsComponent } from './weather/weather-details/weather-details.component';
+import { WeatherDetailsItemComponent } from './weather/weather-details/weather-details-item/weather-details-item.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { WeatherDetailsComponent } from './weather/weather-details/weather-detai
     MainPageComponent,
     WeatherCardComponent,
     WeatherCardListComponent,
-    WeatherDetailsComponent
+    WeatherDetailsComponent,
+    WeatherDetailsItemComponent
   ],
   imports: [
     BrowserModule,

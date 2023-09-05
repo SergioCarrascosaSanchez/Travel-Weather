@@ -1,0 +1,9 @@
+.weather-details-item-container{
+    display: grid;
+    grid-template-columns: 85% 15%;
+    background: #252529;
+}
+
+p{
+    background: #252529;
+}
