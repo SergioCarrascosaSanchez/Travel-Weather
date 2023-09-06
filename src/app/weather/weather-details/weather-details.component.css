@@ -43,3 +43,7 @@ h1 {
   column-gap: 50px;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
 }
+
+*{
+  background-color: #252529;
+}
