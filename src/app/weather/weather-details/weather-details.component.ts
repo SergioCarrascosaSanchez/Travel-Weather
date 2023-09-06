@@ -33,6 +33,14 @@ export class WeatherDetailsComponent {
         key: 'Min apparent Temperature',
         value: this.weatherDetails.minApparentTemperature,
       },
+      {
+        key: 'Rain probability',
+        value: this.weatherDetails.rainProbability,
+      },
+      {
+        key: 'Snow probability',
+        value: this.weatherDetails.snowProbability,
+      },
     ];
   }
 }
