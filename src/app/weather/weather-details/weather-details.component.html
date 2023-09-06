@@ -6,8 +6,13 @@
       </h1>
       <img src="{{ weatherDetails.weatherImage }}" />
     </div>
-    <div class="details-container">
-      <p>Temperatura máxima media {{ weatherDetails.maxTemperature }}°</p>
+    <div class="table">
+      <app-weather-details-item
+        *ngFor="let item of weatherDetailsArray"
+        [item]="item.key"
+        [value]="item.value"
+      ></app-weather-details-item>
+      <!--    <p>Temperatura máxima media {{ weatherDetails.maxTemperature }}°</p>
       <p>
         Temperatura máxima aparente media
         {{ weatherDetails.maxApparentTemperature }}°
@@ -25,6 +30,7 @@
         Probabilidad de nieve
         {{ weatherDetails.snowProbability }}°
       </p>
+      -->
     </div>
   </div>
 </div>
