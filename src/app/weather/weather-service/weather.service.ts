@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { catchError, firstValueFrom, of, throwError } from 'rxjs';
 import { map, switchMap, take } from 'rxjs/operators';
 import { Coordinates } from './coordinates';
+import { DailyWeatherInfo } from 'src/app/shared/daily-weather-info.model';
 
 interface CoordinatesResponse {
   boundingbox: number[];
@@ -29,16 +30,22 @@ interface WeatherResponse {
   elevation: number;
   daily_units: {
     time: string;
+    weathercode: string,
     temperature_2m_max: string;
     temperature_2m_min: string;
+    apparent_temperature_max: string,
+    apparent_temperature_min: string,
     precipitation_sum: string;
     rain_sum: string;
     snowfall_sum: string;
   };
   daily: {
     time: string[];
+    weathercode: number[],
     temperature_2m_max: number[];
     temperature_2m_min: number[];
+    apparent_temperature_max: number[],
+    apparent_temperature_min: number[],
     precipitation_sum: number[];
     rain_sum: number[];
     snowfall_sum: number[];
@@ -77,8 +84,23 @@ export class WeatherService {
             .substring(
               0,
               10
-            )}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,rain_sum,snowfall_sum `
-        );
+            )}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,rain_sum,snowfall_sum,,apparent_temperature_max,apparent_temperature_min,weathercode `
+        ).pipe(map(
+          value => {
+            const dailyInfo : DailyWeatherInfo = {
+              minTemperature: value.daily.temperature_2m_min[0],
+              maxApparentTemperature: value.daily.apparent_temperature_max[0],
+              minApparentTemperature: value.daily.apparent_temperature_min[0],
+              maxTemperature : value.daily.temperature_2m_max[0],
+              date: new Date(),
+              weatherCode: String(value.daily.weathercode[0]),
+              rainProbability: value.daily.rain_sum[0],
+              snowProbability: value.daily.snowfall_sum[0],
+              weatherImage: "https://ssl.gstatic.com/onebox/weather/64/cloudy.png"
+            };
+            return dailyInfo
+          }
+        ));
       })
     );
   }
