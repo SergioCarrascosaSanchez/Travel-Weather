@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { catchError, firstValueFrom, of, throwError } from 'rxjs';
 import { map, switchMap, take } from 'rxjs/operators';
 import { Coordinates } from './coordinates';
-import { DailyWeatherInfo } from 'src/app/shared/daily-weather-info.model';
+import { DailyWeatherInfo } from 'src/app/weather/daily-weather-info.model';
 
 interface CoordinatesResponse {
   boundingbox: number[];

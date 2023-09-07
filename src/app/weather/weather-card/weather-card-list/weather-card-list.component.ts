@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { DailyWeatherInfo } from 'src/app/shared/daily-weather-info.model';
+import { DailyWeatherInfo } from 'src/app/weather/daily-weather-info.model';
 
 @Component({
   selector: 'app-weather-card-list',
