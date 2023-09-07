@@ -1,6 +1,15 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable, catchError, firstValueFrom, of, throwError } from 'rxjs';
+import { Injectable, OnDestroy, OnInit } from '@angular/core';
+import {
+  BehaviorSubject,
+  Observable,
+  Subject,
+  Subscription,
+  catchError,
+  firstValueFrom,
+  of,
+  throwError,
+} from 'rxjs';
 import { map, switchMap, take } from 'rxjs/operators';
 import { Coordinates } from './coordinates';
 import { DailyWeatherInfo } from 'src/app/weather/daily-weather-info.model';
@@ -10,7 +19,9 @@ import { CoordinatesResponse } from './coordinates-response.model';
 @Injectable({
   providedIn: 'root',
 })
-export class WeatherService {
+export class WeatherService{
+  loading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+
   constructor(private http: HttpClient) {}
 
   getWeatherData(
@@ -61,6 +72,7 @@ export class WeatherService {
                     'https://ssl.gstatic.com/onebox/weather/64/cloudy.png',
                 });
               }
+              this.loading.next(false)
               return dailyInfo;
             })
           );
@@ -69,6 +81,7 @@ export class WeatherService {
   }
 
   getCoordinates(city: string, country: string) {
+    this.loading.next(true)
     return this.http
       .get<CoordinatesResponse[]>(`https://geocode.maps.co/search?q=${city}`)
       .pipe(

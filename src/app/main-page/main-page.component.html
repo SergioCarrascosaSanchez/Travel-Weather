@@ -17,9 +17,7 @@
       style="grid-column: 2"
       class="input-pair-right"
     >
-      <option value="">
-        Country
-      </option>
+      <option value="">Country</option>
       <option *ngFor="let flag of flagNames" [value]="flag[1]">
         {{ flag[0] }} {{ flag[2] }}
       </option>
@@ -28,6 +26,11 @@
     <input [(ngModel)]="endDate" type="date" style="grid-column: 6" />
     <button (click)="onSubmit()" style="grid-column: 8">Buscar</button>
   </div>
-  <app-weather-details></app-weather-details>
-  <app-weather-card-list></app-weather-card-list>
+  <div *ngIf="!loading">
+    <app-weather-details></app-weather-details>
+    <app-weather-card-list></app-weather-card-list>
+  </div>
+  <p *ngIf="loading" style="color: white;">
+    Loading...
+  </p>
 </div>
