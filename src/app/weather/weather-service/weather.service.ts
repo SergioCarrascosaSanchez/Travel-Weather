@@ -1,61 +1,17 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, firstValueFrom, of, throwError } from 'rxjs';
+import { Observable, catchError, firstValueFrom, of, throwError } from 'rxjs';
 import { map, switchMap, take } from 'rxjs/operators';
 import { Coordinates } from './coordinates';
 import { DailyWeatherInfo } from 'src/app/weather/daily-weather-info.model';
-
-interface CoordinatesResponse {
-  boundingbox: number[];
-  class: string;
-  display_name: string;
-  importance: number;
-  lat: string;
-  licence: string;
-  lon: string;
-  osm_id: number;
-  osm_type: string;
-  place_id: number;
-  powered_by: string;
-  type: string;
-}
-
-interface WeatherResponse {
-  latitude: number;
-  longitude: number;
-  generationtime_ms: number;
-  utc_offset_seconds: number;
-  timezone: string;
-  timezone_abbreviation: string;
-  elevation: number;
-  daily_units: {
-    time: string;
-    weathercode: string,
-    temperature_2m_max: string;
-    temperature_2m_min: string;
-    apparent_temperature_max: string,
-    apparent_temperature_min: string,
-    precipitation_sum: string;
-    rain_sum: string;
-    snowfall_sum: string;
-  };
-  daily: {
-    time: string[];
-    weathercode: number[],
-    temperature_2m_max: number[];
-    temperature_2m_min: number[];
-    apparent_temperature_max: number[],
-    apparent_temperature_min: number[],
-    precipitation_sum: number[];
-    rain_sum: number[];
-    snowfall_sum: number[];
-  };
-}
+import { WeatherResponse } from './weather-response.model';
+import { CoordinatesResponse } from './coordinates-response.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class WeatherService {
+
   constructor(private http: HttpClient) {}
 
   getWeatherData(
