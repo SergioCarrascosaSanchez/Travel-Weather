@@ -11,7 +11,6 @@ import { CoordinatesResponse } from './coordinates-response.model';
   providedIn: 'root',
 })
 export class WeatherService {
-
   constructor(private http: HttpClient) {}
 
   getWeatherData(
@@ -28,35 +27,43 @@ export class WeatherService {
     return this.getCoordinates(city, country).pipe(
       take(1),
       switchMap((coordinates: Coordinates) => {
-        return this.http.get<WeatherResponse>(
-          `https://archive-api.open-meteo.com/v1/era5?latitude=${
-            coordinates.latitude
-          }&longitude=${
-            coordinates.longitude
-          }&timezone=GMT&start_date=${startDate
-            .toISOString()
-            .substring(0, 10)}&end_date=${endDate
-            .toISOString()
-            .substring(
-              0,
-              10
-            )}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,rain_sum,snowfall_sum,,apparent_temperature_max,apparent_temperature_min,weathercode `
-        ).pipe(map(
-          value => {
-            const dailyInfo : DailyWeatherInfo = {
-              minTemperature: value.daily.temperature_2m_min[0],
-              maxApparentTemperature: value.daily.apparent_temperature_max[0],
-              minApparentTemperature: value.daily.apparent_temperature_min[0],
-              maxTemperature : value.daily.temperature_2m_max[0],
-              date: new Date(),
-              weatherCode: String(value.daily.weathercode[0]),
-              rainProbability: value.daily.rain_sum[0],
-              snowProbability: value.daily.snowfall_sum[0],
-              weatherImage: "https://ssl.gstatic.com/onebox/weather/64/cloudy.png"
-            };
-            return dailyInfo
-          }
-        ));
+        return this.http
+          .get<WeatherResponse>(
+            `https://archive-api.open-meteo.com/v1/era5?latitude=${
+              coordinates.latitude
+            }&longitude=${
+              coordinates.longitude
+            }&timezone=GMT&start_date=${startDate
+              .toISOString()
+              .substring(0, 10)}&end_date=${endDate
+              .toISOString()
+              .substring(
+                0,
+                10
+              )}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,rain_sum,snowfall_sum,,apparent_temperature_max,apparent_temperature_min,weathercode `
+          )
+          .pipe(
+            map((value) => {
+              const dailyInfo: DailyWeatherInfo[] = [];
+              for (let i = 0; i < value.daily.time.length; i++) {
+                dailyInfo.push({
+                  minTemperature: value.daily.temperature_2m_min[i],
+                  maxApparentTemperature:
+                    value.daily.apparent_temperature_max[i],
+                  minApparentTemperature:
+                    value.daily.apparent_temperature_min[i],
+                  maxTemperature: value.daily.temperature_2m_max[i],
+                  date: new Date(value.daily.time[i]),
+                  weatherCode: String(value.daily.weathercode[i]),
+                  rainProbability: value.daily.rain_sum[i],
+                  snowProbability: value.daily.snowfall_sum[i],
+                  weatherImage:
+                    'https://ssl.gstatic.com/onebox/weather/64/cloudy.png',
+                });
+              }
+              return dailyInfo;
+            })
+          );
       })
     );
   }
