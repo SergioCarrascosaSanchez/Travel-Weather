@@ -9,6 +9,7 @@ import { DailyWeatherInfo } from 'src/app/weather/daily-weather-info.model';
 export class WeatherCardComponent {
 
   @Input() weatherInfo : DailyWeatherInfo
+  @Input() index : number
 
   /*date: Date = new Date()
   day = this.date.getDate()

@@ -1,6 +1,7 @@
 <div class="container">
   <app-weather-card
-    *ngFor="let weatherInfo of weatherInfoArray"
+    *ngFor="let weatherInfo of weatherInfoArray; let i = index"
     [weatherInfo]="weatherInfo"
+    [index]="i"
   ></app-weather-card>
 </div>
