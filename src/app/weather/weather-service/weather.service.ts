@@ -22,7 +22,7 @@ import { CoordinatesResponse } from './coordinates-response.model';
 export class WeatherService{
   loading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   weatherInfoChanged: Subject<DailyWeatherInfo[]> = new Subject<DailyWeatherInfo[]>();
-  weatherInfo : DailyWeatherInfo[] = null
+  weatherInfo : DailyWeatherInfo[] = []
 
   constructor(private http: HttpClient) {}
 
