@@ -26,7 +26,7 @@ export class WeatherService{
 
   constructor(private http: HttpClient) {}
 
-  getWeatherData(
+  fetchWeatherData(
     city: string,
     country: string,
     startDate: Date,
