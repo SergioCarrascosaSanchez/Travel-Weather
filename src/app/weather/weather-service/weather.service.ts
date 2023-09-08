@@ -21,8 +21,8 @@ import { CoordinatesResponse } from './coordinates-response.model';
 })
 export class WeatherService{
   loading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  weatherInfoSubject: BehaviorSubject<DailyWeatherInfo[]> = new BehaviorSubject<DailyWeatherInfo[]>(null);
-  weatherInfoObservable = this.weatherInfoSubject.asObservable()
+  weatherInfoChanged: Subject<DailyWeatherInfo[]> = new Subject<DailyWeatherInfo[]>();
+  weatherInfo : DailyWeatherInfo[] = null
 
   constructor(private http: HttpClient) {}
 
@@ -75,7 +75,7 @@ export class WeatherService{
                 });
               }
               this.loading.next(false)
-              this.weatherInfoSubject.next(dailyInfo);
+              this.setWeatherInfo(dailyInfo)
             })
           )
       })
@@ -102,5 +102,18 @@ export class WeatherService{
           };
         })
       );
+  }
+
+  setWeatherInfo(newWeatherInfo: DailyWeatherInfo[]){
+    this.weatherInfo = newWeatherInfo
+    this.weatherInfoChanged.next([...newWeatherInfo]);
+  }
+
+  getWeatherInfo(){
+    return [...this.weatherInfo]
+  }
+
+  getSpecificWeatherInfo(index: number){
+    return this.weatherInfo[index]
   }
 }
