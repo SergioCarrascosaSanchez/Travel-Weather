@@ -37,7 +37,7 @@ export class WeatherService{
     startDate.setFullYear(startDate.getFullYear() - 1);
     endDate.setFullYear(endDate.getFullYear() - 1);
 
-    this.getCoordinates(city, country).pipe(
+    return this.getCoordinates(city, country).pipe(
       take(1),
       switchMap((coordinates: Coordinates) => {
         return this.http
@@ -79,7 +79,7 @@ export class WeatherService{
             })
           )
       })
-    ).subscribe()
+    )
   }
 
   getCoordinates(city: string, country: string) {

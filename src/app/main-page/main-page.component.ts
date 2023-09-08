@@ -22,7 +22,7 @@ export class MainPageComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     this.weatherService
-      .fetchWeatherData('', '', new Date(this.startDate), new Date(this.endDate))
+      .fetchWeatherData('', '', new Date(this.startDate), new Date(this.endDate)).subscribe()
   }
 
   ngOnInit(): void {
