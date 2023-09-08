@@ -12,7 +12,7 @@ export class WeatherCardListComponent implements OnInit {
   weatherInfoArray: DailyWeatherInfo[];
 
   ngOnInit(): void {
-    this.weatherService.weatherInfo.subscribe((info) => {
+    this.weatherService.weatherInfoObservable.subscribe((info) => {
       this.weatherInfoArray = info != null ? info : [];
     });
   }
