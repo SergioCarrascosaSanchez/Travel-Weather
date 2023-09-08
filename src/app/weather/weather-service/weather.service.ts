@@ -21,6 +21,8 @@ import { CoordinatesResponse } from './coordinates-response.model';
 })
 export class WeatherService{
   loading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  weatherInfoSubject: BehaviorSubject<DailyWeatherInfo[]> = new BehaviorSubject<DailyWeatherInfo[]>(null);
+  weatherInfo = this.weatherInfoSubject.asObservable()
 
   constructor(private http: HttpClient) {}
 
@@ -35,7 +37,7 @@ export class WeatherService{
     startDate.setFullYear(startDate.getFullYear() - 1);
     endDate.setFullYear(endDate.getFullYear() - 1);
 
-    return this.getCoordinates(city, country).pipe(
+    this.getCoordinates(city, country).pipe(
       take(1),
       switchMap((coordinates: Coordinates) => {
         return this.http
@@ -73,11 +75,11 @@ export class WeatherService{
                 });
               }
               this.loading.next(false)
-              return dailyInfo;
+              this.weatherInfoSubject.next(dailyInfo);
             })
-          );
+          )
       })
-    );
+    ).subscribe()
   }
 
   getCoordinates(city: string, country: string) {
