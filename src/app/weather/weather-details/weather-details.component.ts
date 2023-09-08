@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { DailyWeatherInfo } from 'src/app/weather/daily-weather-info.model';
+import { WeatherService } from '../weather-service/weather.service';
 
 @Component({
   selector: 'app-weather-details',
@@ -7,7 +8,7 @@ import { DailyWeatherInfo } from 'src/app/weather/daily-weather-info.model';
   styleUrls: ['./weather-details.component.css'],
 })
 export class WeatherDetailsComponent {
-  @Input() weatherDetails: DailyWeatherInfo = {
+  weatherDetails: DailyWeatherInfo = {
     date: new Date(),
     weatherCode: 'Cloudy',
     weatherImage: 'https://ssl.gstatic.com/onebox/weather/64/cloudy.png',
@@ -19,27 +20,39 @@ export class WeatherDetailsComponent {
     rainProbability: 0.1,
   };
 
-  weatherDetailsArray: { key: string; value: number }[] = [];
+  weatherDetailsArray: { key: string; value: number | Date | string }[] = [];
 
-  constructor() {
-    this.weatherDetailsArray = [
-      { key: 'Max Temperature', value: this.weatherDetails.maxTemperature },
+  constructor(private weatherService: WeatherService) {
+    this.weatherService.weatherDetailsInfo.subscribe(
+      (newWeatherDetailsInfo) => {
+        this.weatherDetailsArray = this.processDailyWeatherInfoToArray(
+          newWeatherDetailsInfo
+        );
+      }
+    );
+  }
+
+  processDailyWeatherInfoToArray(
+    weatherDetails: DailyWeatherInfo
+  ): { key: string; value: Date | number | string }[] {
+    return [
+      { key: 'Max Temperature', value: weatherDetails.maxTemperature },
       {
         key: 'Max apparent Temperature',
-        value: this.weatherDetails.maxApparentTemperature,
+        value: weatherDetails.maxApparentTemperature,
       },
-      { key: 'Min Temperature', value: this.weatherDetails.minTemperature },
+      { key: 'Min Temperature', value: weatherDetails.minTemperature },
       {
         key: 'Min apparent Temperature',
-        value: this.weatherDetails.minApparentTemperature,
+        value: weatherDetails.minApparentTemperature,
       },
       {
         key: 'Rain probability',
-        value: this.weatherDetails.rainProbability,
+        value: weatherDetails.rainProbability,
       },
       {
         key: 'Snow probability',
-        value: this.weatherDetails.snowProbability,
+        value: weatherDetails.snowProbability,
       },
     ];
   }

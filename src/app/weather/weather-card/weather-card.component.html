@@ -1,4 +1,4 @@
-<div class="weather-card">
+<div class="weather-card" (click)="onClick()">
   <h2>{{ weatherInfo.date.getDate() }}/{{ weatherInfo.date.getMonth() }}</h2>
   <img src="{{ weatherInfo.weatherImage }}" />
   <p class="max-temp">
