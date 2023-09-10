@@ -19,11 +19,14 @@ import { CoordinatesResponse } from './coordinates-response.model';
 @Injectable({
   providedIn: 'root',
 })
-export class WeatherService{
+export class WeatherService {
   loading: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
-  weatherInfoChanged: Subject<DailyWeatherInfo[]> = new Subject<DailyWeatherInfo[]>();
-  weatherInfo : DailyWeatherInfo[] = []
-  weatherDetailsInfo : Subject<DailyWeatherInfo> = new Subject<DailyWeatherInfo>()
+  weatherInfoChanged: Subject<DailyWeatherInfo[]> = new Subject<
+    DailyWeatherInfo[]
+  >();
+  weatherInfo: DailyWeatherInfo[] = [];
+  weatherDetailsInfo: Subject<DailyWeatherInfo> =
+    new Subject<DailyWeatherInfo>();
 
   constructor(private http: HttpClient) {}
 
@@ -72,19 +75,19 @@ export class WeatherService{
                   rainProbability: value.daily.rain_sum[i],
                   snowProbability: value.daily.snowfall_sum[i],
                   weatherImage:
-                    'https://ssl.gstatic.com/onebox/weather/64/cloudy.png',
+                    this.setWeatherImage(value.daily.weathercode[i]),
                 });
               }
-              this.loading.next(false)
-              this.setWeatherInfo(dailyInfo)
+              this.loading.next(false);
+              this.setWeatherInfo(dailyInfo);
             })
-          )
+          );
       })
-    )
+    );
   }
 
   getCoordinates(city: string, country: string) {
-    this.loading.next(true)
+    this.loading.next(true);
     return this.http
       .get<CoordinatesResponse[]>(`https://geocode.maps.co/search?q=${city}`)
       .pipe(
@@ -105,16 +108,32 @@ export class WeatherService{
       );
   }
 
-  setWeatherInfo(newWeatherInfo: DailyWeatherInfo[]){
-    this.weatherInfo = newWeatherInfo
+  setWeatherInfo(newWeatherInfo: DailyWeatherInfo[]) {
+    this.weatherInfo = newWeatherInfo;
     this.weatherInfoChanged.next([...newWeatherInfo]);
   }
 
-  getWeatherInfo(){
-    return [...this.weatherInfo]
+  getWeatherInfo() {
+    return [...this.weatherInfo];
   }
 
-  getSpecificWeatherInfo(index: number){
-    return this.weatherInfo[index]
+  getSpecificWeatherInfo(index: number) {
+    return this.weatherInfo[index];
+  }
+
+  private setWeatherImage(code: number) {
+    if (code === 0 || code === 1)
+      return 'https://ssl.gstatic.com/onebox/weather/64/sunny.png';
+    if (code === 2 || code === 3)
+      return 'https://ssl.gstatic.com/onebox/weather/64/cloudy.png';
+    if (code >= 40 && code < 50)
+      return 'https://ssl.gstatic.com/onebox/weather/64/fog.png';
+    if ((code >= 50 && code < 70) || (code >= 80 && code < 85))
+      return 'https://ssl.gstatic.com/onebox/weather/64/rain.png';
+    if ((code >= 70 && code < 80) || (code >= 85 && code < 90))
+      return 'https://ssl.gstatic.com/onebox/weather/64/snow.png';
+    if (code >= 90 && code < 100)
+      return 'https://ssl.gstatic.com/onebox/weather/64/thunderstorms.png';
+    return null;
   }
 }
