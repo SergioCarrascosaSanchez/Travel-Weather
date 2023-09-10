@@ -11,17 +11,6 @@
       style="grid-column: 1"
       class="input-pair-left"
     />
-    <select
-      [(ngModel)]="inputCountry"
-      type="text"
-      style="grid-column: 2"
-      class="input-pair-right"
-    >
-      <option value="">Country</option>
-      <option *ngFor="let flag of flagNames" [value]="flag[1]">
-        {{ flag[0] }} {{ flag[2] }}
-      </option>
-    </select>
     <input [(ngModel)]="startDate" type="date" style="grid-column: 4" />
     <input [(ngModel)]="endDate" type="date" style="grid-column: 6" />
     <button (click)="onSubmit()" style="grid-column: 8">Buscar</button>

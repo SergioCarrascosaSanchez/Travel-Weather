@@ -32,16 +32,13 @@ export class WeatherService {
 
   fetchWeatherData(
     city: string,
-    country: string,
     startDate: Date,
     endDate: Date
   ) {
-    city = 'Madrid';
-    country = 'Spain';
     startDate.setFullYear(startDate.getFullYear() - 1);
     endDate.setFullYear(endDate.getFullYear() - 1);
 
-    return this.getCoordinates(city, country).pipe(
+    return this.getCoordinates(city).pipe(
       take(1),
       switchMap((coordinates: Coordinates) => {
         return this.http
@@ -86,20 +83,14 @@ export class WeatherService {
     );
   }
 
-  getCoordinates(city: string, country: string) {
+  getCoordinates(city: string) {
     this.loading.next(true);
     return this.http
       .get<CoordinatesResponse[]>(`https://geocode.maps.co/search?q=${city}`)
       .pipe(
         catchError((error) => of(error)),
-        map((coordinatesRawData) => {
-          console.log();
-          const coordinates: CoordinatesResponse | undefined =
-            coordinatesRawData.find((element: any) =>
-              element.display_name.includes(country)
-            );
-          if (typeof coordinates == 'undefined')
-            throw new Error('City not found');
+        map((coordinatesRawData : CoordinatesResponse[]) => {
+          const coordinates = coordinatesRawData[0]
           return {
             longitude: Number(coordinates?.lon),
             latitude: Number(coordinates?.lat),

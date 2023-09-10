@@ -15,14 +15,12 @@ export class MainPageComponent implements OnInit, OnDestroy {
   loadingSuscription : Subscription
 
   inputCity: string = '';
-  inputCountry: string = '';
-  flagNames = flagNames;
   startDate: string;
   endDate: string;
 
   onSubmit() {
     this.weatherService
-      .fetchWeatherData('', '', new Date(this.startDate), new Date(this.endDate)).subscribe()
+      .fetchWeatherData(this.inputCity, new Date(this.startDate), new Date(this.endDate)).subscribe()
   }
 
   ngOnInit(): void {
