@@ -11,9 +11,9 @@
       style="grid-column: 1"
       class="input-pair-left"
     />
-    <input [(ngModel)]="startDate" type="date" style="grid-column: 4" />
-    <input [(ngModel)]="endDate" type="date" style="grid-column: 6" />
-    <button (click)="onSubmit()" style="grid-column: 8">Buscar</button>
+    <input [(ngModel)]="startDate" type="date" style="grid-column: 3" />
+    <input [(ngModel)]="endDate" type="date" style="grid-column: 5" />
+    <button (click)="onSubmit()" style="grid-column: 7">Buscar</button>
   </div>
   <div *ngIf="!loading">
     <app-weather-details></app-weather-details>
