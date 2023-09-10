@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { DailyWeatherInfo } from 'src/app/weather/daily-weather-info.model';
 import { WeatherService } from '../weather-service/weather.service';
 
@@ -16,11 +16,11 @@ export class WeatherDetailsComponent implements OnInit {
 
   ngOnInit(): void {
     this.weatherService.weatherDetailsInfo.subscribe(
-      (newWeatherDetailsInfo : DailyWeatherInfo) => {
+      (newWeatherDetailsInfo: DailyWeatherInfo) => {
         this.weatherDetailsArray = this.processDailyWeatherInfoToArray(
           newWeatherDetailsInfo
         );
-        this.weatherDetails = newWeatherDetailsInfo
+        this.weatherDetails = newWeatherDetailsInfo;
       }
     );
   }

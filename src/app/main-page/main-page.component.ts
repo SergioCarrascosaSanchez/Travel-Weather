@@ -1,5 +1,4 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { flagNames } from './flag-names';
 import { WeatherService } from '../weather/weather-service/weather.service';
 import { Subscription } from 'rxjs';
 
@@ -12,7 +11,7 @@ export class MainPageComponent implements OnInit, OnDestroy {
   constructor(private weatherService: WeatherService) {}
 
   loading: boolean;
-  loadingSuscription : Subscription
+  loadingSuscription: Subscription;
 
   inputCity: string = '';
   startDate: string;
@@ -20,14 +19,21 @@ export class MainPageComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     this.weatherService
-      .fetchWeatherData(this.inputCity, new Date(this.startDate), new Date(this.endDate)).subscribe()
+      .fetchWeatherData(
+        this.inputCity,
+        new Date(this.startDate),
+        new Date(this.endDate)
+      )
+      .subscribe();
   }
 
   ngOnInit(): void {
-   this.loadingSuscription = this.weatherService.loading.subscribe((value) => (this.loading = value));
+    this.loadingSuscription = this.weatherService.loading.subscribe(
+      (value) => (this.loading = value)
+    );
   }
 
   ngOnDestroy(): void {
-    this.loadingSuscription.unsubscribe()
+    this.loadingSuscription.unsubscribe();
   }
 }

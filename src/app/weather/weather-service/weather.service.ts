@@ -1,15 +1,6 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Injectable, OnDestroy, OnInit } from '@angular/core';
-import {
-  BehaviorSubject,
-  Observable,
-  Subject,
-  Subscription,
-  catchError,
-  firstValueFrom,
-  of,
-  throwError,
-} from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Subject, catchError, of } from 'rxjs';
 import { map, switchMap, take } from 'rxjs/operators';
 import { Coordinates } from './coordinates';
 import { DailyWeatherInfo } from 'src/app/weather/daily-weather-info.model';
@@ -30,11 +21,7 @@ export class WeatherService {
 
   constructor(private http: HttpClient) {}
 
-  fetchWeatherData(
-    city: string,
-    startDate: Date,
-    endDate: Date
-  ) {
+  fetchWeatherData(city: string, startDate: Date, endDate: Date) {
     startDate.setFullYear(startDate.getFullYear() - 1);
     endDate.setFullYear(endDate.getFullYear() - 1);
 
@@ -71,8 +58,9 @@ export class WeatherService {
                   weatherCode: String(value.daily.weathercode[i]),
                   rainProbability: value.daily.rain_sum[i],
                   snowProbability: value.daily.snowfall_sum[i],
-                  weatherImage:
-                    this.setWeatherImage(value.daily.weathercode[i]),
+                  weatherImage: this.setWeatherImage(
+                    value.daily.weathercode[i]
+                  ),
                 });
               }
               this.loading.next(false);
@@ -89,8 +77,8 @@ export class WeatherService {
       .get<CoordinatesResponse[]>(`https://geocode.maps.co/search?q=${city}`)
       .pipe(
         catchError((error) => of(error)),
-        map((coordinatesRawData : CoordinatesResponse[]) => {
-          const coordinates = coordinatesRawData[0]
+        map((coordinatesRawData: CoordinatesResponse[]) => {
+          const coordinates = coordinatesRawData[0];
           return {
             longitude: Number(coordinates?.lon),
             latitude: Number(coordinates?.lat),
