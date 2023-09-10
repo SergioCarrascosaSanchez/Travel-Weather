@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { DailyWeatherInfo } from 'src/app/weather/daily-weather-info.model';
 import { WeatherService } from '../weather-service/weather.service';
 
@@ -7,12 +7,14 @@ import { WeatherService } from '../weather-service/weather.service';
   templateUrl: './weather-details.component.html',
   styleUrls: ['./weather-details.component.css'],
 })
-export class WeatherDetailsComponent {
+export class WeatherDetailsComponent implements OnInit {
   weatherDetails: DailyWeatherInfo = null;
 
   weatherDetailsArray: { key: string; value: number | Date | string }[] = [];
 
-  constructor(private weatherService: WeatherService) {
+  constructor(private weatherService: WeatherService) {}
+
+  ngOnInit(): void {
     this.weatherService.weatherDetailsInfo.subscribe(
       (newWeatherDetailsInfo : DailyWeatherInfo) => {
         this.weatherDetailsArray = this.processDailyWeatherInfoToArray(
