@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Subject, catchError, of } from 'rxjs';
-import { map, switchMap, take } from 'rxjs/operators';
+import { BehaviorSubject, Subject, catchError, forkJoin, of } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { Coordinates } from './coordinates';
 import { DailyWeatherInfo } from 'src/app/weather/daily-weather-info.model';
 import { WeatherResponse } from './weather-response.model';
@@ -22,51 +22,67 @@ export class WeatherService {
   constructor(private http: HttpClient) {}
 
   fetchWeatherData(city: string, startDate: Date, endDate: Date) {
-    startDate.setFullYear(startDate.getFullYear() - 1);
-    endDate.setFullYear(endDate.getFullYear() - 1);
+    const responses: DailyWeatherInfo[][] = [];
 
     return this.getCoordinates(city).pipe(
-      take(1),
-      switchMap((coordinates: Coordinates) => {
-        return this.http
-          .get<WeatherResponse>(
-            `https://archive-api.open-meteo.com/v1/era5?latitude=${
-              coordinates.latitude
-            }&longitude=${
-              coordinates.longitude
-            }&timezone=GMT&start_date=${startDate
-              .toISOString()
-              .substring(0, 10)}&end_date=${endDate
-              .toISOString()
-              .substring(
-                0,
-                10
-              )}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,rain_sum,snowfall_sum,,apparent_temperature_max,apparent_temperature_min,weathercode `
-          )
-          .pipe(
-            map((value) => {
-              const dailyInfo: DailyWeatherInfo[] = [];
-              for (let i = 0; i < value.daily.time.length; i++) {
-                dailyInfo.push({
-                  minTemperature: value.daily.temperature_2m_min[i],
-                  maxApparentTemperature:
-                    value.daily.apparent_temperature_max[i],
-                  minApparentTemperature:
-                    value.daily.apparent_temperature_min[i],
-                  maxTemperature: value.daily.temperature_2m_max[i],
-                  date: new Date(value.daily.time[i]),
-                  weatherCode: String(value.daily.weathercode[i]),
-                  rainProbability: value.daily.rain_sum[i],
-                  snowProbability: value.daily.snowfall_sum[i],
-                  weatherImage: this.setWeatherImage(
-                    value.daily.weathercode[i]
-                  ),
-                });
-              }
-              this.loading.next(false);
-              this.setWeatherInfo(dailyInfo);
-            })
-          );
+      switchMap((coordinatesData) => {
+        return forkJoin(
+          this.getYearsArray().map((year) => {
+            startDate.setFullYear(year);
+            endDate.setFullYear(year);
+
+            return this.http
+              .get<WeatherResponse>(
+                `https://archive-api.open-meteo.com/v1/era5?latitude=${
+                  coordinatesData.latitude
+                }&longitude=${
+                  coordinatesData.longitude
+                }&timezone=GMT&start_date=${startDate
+                  .toISOString()
+                  .substring(0, 10)}&end_date=${endDate
+                  .toISOString()
+                  .substring(
+                    0,
+                    10
+                  )}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,rain_sum,snowfall_sum,,apparent_temperature_max,apparent_temperature_min,weathercode`
+              )
+              .pipe(
+                catchError((error) => {
+                  // Manejar errores si es necesario
+                  console.error('Error en solicitud HTTP:', error);
+                  return of(null);
+                }),
+                map((value) => {
+                  const processedResponse: DailyWeatherInfo[] = [];
+                  for (let i = 0; i < value.daily.time.length; i++) {
+                    processedResponse.push({
+                      minTemperature: value.daily.temperature_2m_min[i],
+                      maxApparentTemperature:
+                        value.daily.apparent_temperature_max[i],
+                      minApparentTemperature:
+                        value.daily.apparent_temperature_min[i],
+                      maxTemperature: value.daily.temperature_2m_max[i],
+                      date: new Date(value.daily.time[i]),
+                      weatherCode: String(value.daily.weathercode[i]),
+                      rainProbability: value.daily.rain_sum[i],
+                      snowProbability: value.daily.snowfall_sum[i],
+                      weatherImage: this.setWeatherImage(
+                        value.daily.weathercode[i]
+                      ),
+                    });
+                  }
+                  responses.push(processedResponse);
+                  return processedResponse;
+                })
+              );
+          })
+        ).pipe(
+          map(() => this.getAverages(responses)),
+          tap((info: DailyWeatherInfo[]) => {
+            this.loading.next(false);
+            this.setWeatherInfo(info);
+          })
+        );
       })
     );
   }
@@ -85,6 +101,63 @@ export class WeatherService {
           };
         })
       );
+  }
+
+  getAverages(dailyWeatherInfoArray: DailyWeatherInfo[][]): DailyWeatherInfo[] {
+    const numberOfDays = dailyWeatherInfoArray[0].length;
+    let responseArray: DailyWeatherInfo[] = this.populateAveragesArray(
+      numberOfDays,
+      dailyWeatherInfoArray[0][0].date
+    );
+    console.log(dailyWeatherInfoArray);
+    for (let i = 0; i < responseArray.length; i++) {
+      for (let j = 0; j < dailyWeatherInfoArray.length; j++) {
+        responseArray[i].maxApparentTemperature =
+          responseArray[i].maxApparentTemperature +
+          dailyWeatherInfoArray[j][i].maxApparentTemperature;
+
+        responseArray[i].maxTemperature =
+          responseArray[i].maxTemperature +
+          dailyWeatherInfoArray[j][i].maxTemperature;
+
+        responseArray[i].minTemperature =
+          responseArray[i].minTemperature +
+          dailyWeatherInfoArray[j][i].minTemperature;
+
+        responseArray[i].minApparentTemperature =
+          responseArray[i].minApparentTemperature +
+          dailyWeatherInfoArray[j][i].minApparentTemperature;
+
+        responseArray[i].snowProbability =
+          responseArray[i].snowProbability +
+          dailyWeatherInfoArray[j][i].snowProbability;
+
+        responseArray[i].rainProbability =
+          responseArray[i].rainProbability +
+          dailyWeatherInfoArray[j][i].rainProbability;
+      }
+    }
+    return responseArray.map((element) => {
+      element.maxApparentTemperature = Number(
+        (element.maxApparentTemperature / numberOfDays).toFixed(1)
+      );
+      element.minApparentTemperature = Number(
+        (element.minApparentTemperature / numberOfDays).toFixed(1)
+      );
+      element.maxTemperature = Number(
+        (element.maxTemperature / numberOfDays).toFixed(1)
+      );
+      element.minTemperature = Number(
+        (element.minTemperature / numberOfDays).toFixed(1)
+      );
+      element.snowProbability = Number(
+        (element.snowProbability / numberOfDays).toFixed(1)
+      );
+      element.rainProbability = Number(
+        (element.rainProbability / numberOfDays).toFixed(1)
+      );
+      return element;
+    });
   }
 
   setWeatherInfo(newWeatherInfo: DailyWeatherInfo[]) {
@@ -114,5 +187,37 @@ export class WeatherService {
     if (code >= 90 && code < 100)
       return 'https://ssl.gstatic.com/onebox/weather/64/thunderstorms.png';
     return null;
+  }
+
+  private getYearsArray() {
+    const actualYear = new Date().getFullYear();
+    const yearsArray = [];
+    for (let i = 1; i < 11; i++) {
+      yearsArray.push(actualYear - i);
+    }
+    return yearsArray;
+  }
+
+  private populateAveragesArray(
+    days: number,
+    initialDate: Date
+  ): DailyWeatherInfo[] {
+    const initialAveragesArray = [];
+    for (let i = 0; i < days; i++) {
+      const currentDate = new Date(initialDate);
+      currentDate.setDate(initialDate.getDate() + i);
+      initialAveragesArray.push({
+        minTemperature: 0,
+        maxApparentTemperature: 0,
+        minApparentTemperature: 0,
+        maxTemperature: 0,
+        date: currentDate,
+        weatherCode: 0,
+        rainProbability: 0,
+        snowProbability: 0,
+        weatherImage: '',
+      });
+    }
+    return initialAveragesArray;
   }
 }
