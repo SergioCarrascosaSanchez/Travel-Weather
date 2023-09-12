@@ -105,11 +105,18 @@ export class WeatherService {
 
   getAverages(dailyWeatherInfoArray: DailyWeatherInfo[][]): DailyWeatherInfo[] {
     const numberOfDays = dailyWeatherInfoArray[0].length;
+    const initialDate = dailyWeatherInfoArray[0][0].date;
     let responseArray: DailyWeatherInfo[] = this.populateAveragesArray(
       numberOfDays,
-      dailyWeatherInfoArray[0][0].date
+      initialDate
     );
     console.log(dailyWeatherInfoArray);
+    let weatherCodeAppearenceMap = {};
+    for (let i = 0; i < numberOfDays; i++) {
+      const currentDate = new Date(initialDate);
+      currentDate.setDate(initialDate.getDate() + i);
+      weatherCodeAppearenceMap[currentDate.getDate()] = {};
+    }
     for (let i = 0; i < responseArray.length; i++) {
       for (let j = 0; j < dailyWeatherInfoArray.length; j++) {
         responseArray[i].maxApparentTemperature =
@@ -135,6 +142,23 @@ export class WeatherService {
         responseArray[i].rainProbability =
           responseArray[i].rainProbability +
           dailyWeatherInfoArray[j][i].rainProbability;
+
+        if (
+          weatherCodeAppearenceMap[dailyWeatherInfoArray[j][i].date.getDate()][
+            dailyWeatherInfoArray[j][i].weatherCode
+          ] == null
+        ) {
+          weatherCodeAppearenceMap[dailyWeatherInfoArray[j][i].date.getDate()][
+            dailyWeatherInfoArray[j][i].weatherCode
+          ] = 1;
+        } else {
+          weatherCodeAppearenceMap[dailyWeatherInfoArray[j][i].date.getDate()][
+            dailyWeatherInfoArray[j][i].weatherCode
+          ] =
+            weatherCodeAppearenceMap[
+              dailyWeatherInfoArray[j][i].date.getDate()
+            ][dailyWeatherInfoArray[j][i].weatherCode] + 1;
+        }
       }
     }
     return responseArray.map((element) => {
@@ -156,8 +180,25 @@ export class WeatherService {
       element.rainProbability = Number(
         (element.rainProbability / numberOfDays).toFixed(1)
       );
+      element.weatherCode = this.setWeatherCode(
+        weatherCodeAppearenceMap[element.date.getDate()]
+      );
+      element.weatherImage = this.setWeatherImage(Number(element.weatherCode));
       return element;
     });
+  }
+
+  setWeatherCode(elementObject) {
+    let maxValue = -Infinity;
+    let resultCode = null;
+    Object.keys(elementObject).forEach((weatherCode) => {
+      if (elementObject[weatherCode] > maxValue) {
+        maxValue = elementObject[weatherCode];
+        resultCode = weatherCode;
+      }
+    });
+    console.log(resultCode);
+    return resultCode;
   }
 
   setWeatherInfo(newWeatherInfo: DailyWeatherInfo[]) {
@@ -174,8 +215,9 @@ export class WeatherService {
   }
 
   private setWeatherImage(code: number) {
-    if (code === 0 || code === 1)
+    if (code === 0 || code === 1) {
       return 'https://ssl.gstatic.com/onebox/weather/64/sunny.png';
+    }
     if (code === 2 || code === 3)
       return 'https://ssl.gstatic.com/onebox/weather/64/cloudy.png';
     if (code >= 40 && code < 50)
