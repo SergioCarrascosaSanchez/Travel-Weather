@@ -96,6 +96,15 @@ export class WeatherService {
       );
   }
 
+  private getYearsArray() {
+    const actualYear = new Date().getFullYear();
+    const yearsArray = [];
+    for (let i = 1; i < this.numberOfYears + 1; i++) {
+      yearsArray.push(actualYear - i);
+    }
+    return yearsArray;
+  }
+
   private getWeatherData(
     latitude: number,
     longitude: number,
@@ -129,6 +138,23 @@ export class WeatherService {
       snowProbability: response.daily.snowfall_sum[i],
       weatherImage: this.setWeatherImage(response.daily.weathercode[i]),
     };
+  }
+
+  private setWeatherImage(code: number) {
+    if (code === 0 || code === 1) {
+      return 'https://ssl.gstatic.com/onebox/weather/64/sunny.png';
+    }
+    if (code === 2 || code === 3)
+      return 'https://ssl.gstatic.com/onebox/weather/64/cloudy.png';
+    if (code >= 40 && code < 50)
+      return 'https://ssl.gstatic.com/onebox/weather/64/fog.png';
+    if ((code >= 50 && code < 70) || (code >= 80 && code < 85))
+      return 'https://ssl.gstatic.com/onebox/weather/64/rain.png';
+    if ((code >= 70 && code < 80) || (code >= 85 && code < 90))
+      return 'https://ssl.gstatic.com/onebox/weather/64/snow.png';
+    if (code >= 90 && code < 100)
+      return 'https://ssl.gstatic.com/onebox/weather/64/thunderstorms.png';
+    return null;
   }
 
   private getAverageProcessedData(
@@ -193,6 +219,29 @@ export class WeatherService {
     return this.getAverages(responseArray, weatherCodeAppearenceMap);
   }
 
+  private populateAveragesArray(
+    days: number,
+    initialDate: Date
+  ): DailyWeatherInfo[] {
+    const initialAveragesArray = [];
+    for (let i = 0; i < days; i++) {
+      const currentDate = new Date(initialDate);
+      currentDate.setDate(initialDate.getDate() + i);
+      initialAveragesArray.push({
+        minTemperature: 0,
+        maxApparentTemperature: 0,
+        minApparentTemperature: 0,
+        maxTemperature: 0,
+        date: currentDate,
+        weatherCode: 0,
+        rainProbability: 0,
+        snowProbability: 0,
+        weatherImage: '',
+      });
+    }
+    return initialAveragesArray;
+  }
+
   private getAverages(
     weatherInfoArray: DailyWeatherInfo[],
     weatherCodeMap: Object
@@ -234,44 +283,5 @@ export class WeatherService {
       }
     });
     return resultCode;
-  }
-  private setWeatherImage(code: number) {
-    if (code === 0 || code === 1) {
-      return 'https://ssl.gstatic.com/onebox/weather/64/sunny.png';
-    }
-    if (code === 2 || code === 3)
-      return 'https://ssl.gstatic.com/onebox/weather/64/cloudy.png';
-    if (code >= 40 && code < 50)
-      return 'https://ssl.gstatic.com/onebox/weather/64/fog.png';
-    if ((code >= 50 && code < 70) || (code >= 80 && code < 85))
-      return 'https://ssl.gstatic.com/onebox/weather/64/rain.png';
-    if ((code >= 70 && code < 80) || (code >= 85 && code < 90))
-      return 'https://ssl.gstatic.com/onebox/weather/64/snow.png';
-    if (code >= 90 && code < 100)
-      return 'https://ssl.gstatic.com/onebox/weather/64/thunderstorms.png';
-    return null;
-  }
-
-  private populateAveragesArray(
-    days: number,
-    initialDate: Date
-  ): DailyWeatherInfo[] {
-    const initialAveragesArray = [];
-    for (let i = 0; i < days; i++) {
-      const currentDate = new Date(initialDate);
-      currentDate.setDate(initialDate.getDate() + i);
-      initialAveragesArray.push({
-        minTemperature: 0,
-        maxApparentTemperature: 0,
-        minApparentTemperature: 0,
-        maxTemperature: 0,
-        date: currentDate,
-        weatherCode: 0,
-        rainProbability: 0,
-        snowProbability: 0,
-        weatherImage: '',
-      });
-    }
-    return initialAveragesArray;
   }
 }
