@@ -33,50 +33,40 @@ export class WeatherService {
             startDate.setFullYear(year);
             endDate.setFullYear(year);
 
-            return this.http
-              .get<WeatherResponse>(
-                `https://archive-api.open-meteo.com/v1/era5?latitude=${
-                  coordinatesData.latitude
-                }&longitude=${
-                  coordinatesData.longitude
-                }&timezone=GMT&start_date=${startDate
-                  .toISOString()
-                  .substring(0, 10)}&end_date=${endDate
-                  .toISOString()
-                  .substring(
-                    0,
-                    10
-                  )}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,rain_sum,snowfall_sum,,apparent_temperature_max,apparent_temperature_min,weathercode`
-              )
-              .pipe(
-                catchError((error) => {
-                  // Manejar errores si es necesario
-                  console.error('Error en solicitud HTTP:', error);
-                  return of(null);
-                }),
-                map((value) => {
-                  const processedResponse: DailyWeatherInfo[] = [];
-                  for (let i = 0; i < value.daily.time.length; i++) {
-                    processedResponse.push({
-                      minTemperature: value.daily.temperature_2m_min[i],
-                      maxApparentTemperature:
-                        value.daily.apparent_temperature_max[i],
-                      minApparentTemperature:
-                        value.daily.apparent_temperature_min[i],
-                      maxTemperature: value.daily.temperature_2m_max[i],
-                      date: new Date(value.daily.time[i]),
-                      weatherCode: String(value.daily.weathercode[i]),
-                      rainProbability: value.daily.rain_sum[i],
-                      snowProbability: value.daily.snowfall_sum[i],
-                      weatherImage: this.setWeatherImage(
-                        value.daily.weathercode[i]
-                      ),
-                    });
-                  }
-                  responses.push(processedResponse);
-                  return processedResponse;
-                })
-              );
+            return this.getWeatherData(
+              coordinatesData.latitude,
+              coordinatesData.longitude,
+              startDate,
+              endDate
+            ).pipe(
+              catchError((error) => {
+                // Manejar errores si es necesario
+                console.error('Error en solicitud HTTP:', error);
+                return of(null);
+              }),
+              map((value) => {
+                const processedResponse: DailyWeatherInfo[] = [];
+                for (let i = 0; i < value.daily.time.length; i++) {
+                  processedResponse.push({
+                    minTemperature: value.daily.temperature_2m_min[i],
+                    maxApparentTemperature:
+                      value.daily.apparent_temperature_max[i],
+                    minApparentTemperature:
+                      value.daily.apparent_temperature_min[i],
+                    maxTemperature: value.daily.temperature_2m_max[i],
+                    date: new Date(value.daily.time[i]),
+                    weatherCode: String(value.daily.weathercode[i]),
+                    rainProbability: value.daily.rain_sum[i],
+                    snowProbability: value.daily.snowfall_sum[i],
+                    weatherImage: this.setWeatherImage(
+                      value.daily.weathercode[i]
+                    ),
+                  });
+                }
+                responses.push(processedResponse);
+                return processedResponse;
+              })
+            );
           })
         ).pipe(
           map(() => this.getAverages(responses)),
@@ -103,6 +93,24 @@ export class WeatherService {
           };
         })
       );
+  }
+
+  private getWeatherData(
+    latitude: number,
+    longitude: number,
+    startDate: Date,
+    endDate: Date
+  ) {
+    return this.http.get<WeatherResponse>(
+      `https://archive-api.open-meteo.com/v1/era5?latitude=${latitude}&longitude=${longitude}&timezone=GMT&start_date=${startDate
+        .toISOString()
+        .substring(0, 10)}&end_date=${endDate
+        .toISOString()
+        .substring(
+          0,
+          10
+        )}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,rain_sum,snowfall_sum,,apparent_temperature_max,apparent_temperature_min,weathercode`
+    );
   }
 
   private getAverages(
