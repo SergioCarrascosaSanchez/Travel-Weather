@@ -172,8 +172,14 @@ export class WeatherService {
         }
       }
     }
+    return this.getAverages(responseArray, weatherCodeAppearenceMap);
+  }
 
-    return responseArray.map((element) => {
+  private getAverages(
+    weatherInfoArray: DailyWeatherInfo[],
+    weatherCodeMap: Object
+  ) {
+    return weatherInfoArray.map((element) => {
       element.maxApparentTemperature = Number(
         (element.maxApparentTemperature / this.numberOfYears).toFixed(1)
       );
@@ -193,7 +199,7 @@ export class WeatherService {
         (element.rainProbability / this.numberOfYears).toFixed(2)
       );
       element.weatherCode = this.setWeatherCode(
-        weatherCodeAppearenceMap[element.date.getDate()]
+        weatherCodeMap[element.date.getDate()]
       );
       element.weatherImage = this.setWeatherImage(Number(element.weatherCode));
       return element;
