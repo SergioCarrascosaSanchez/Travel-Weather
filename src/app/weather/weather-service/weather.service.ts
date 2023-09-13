@@ -19,6 +19,8 @@ export class WeatherService {
   weatherDetailsInfo: Subject<DailyWeatherInfo> =
     new Subject<DailyWeatherInfo>();
 
+  private numberOfYears = 10;
+
   constructor(private http: HttpClient) {}
 
   fetchWeatherData(city: string, startDate: Date, endDate: Date) {
@@ -110,7 +112,6 @@ export class WeatherService {
       numberOfDays,
       initialDate
     );
-    console.log(dailyWeatherInfoArray);
     let weatherCodeAppearenceMap = {};
     for (let i = 0; i < numberOfDays; i++) {
       const currentDate = new Date(initialDate);
@@ -161,24 +162,25 @@ export class WeatherService {
         }
       }
     }
+
     return responseArray.map((element) => {
       element.maxApparentTemperature = Number(
-        (element.maxApparentTemperature / numberOfDays).toFixed(1)
+        (element.maxApparentTemperature / this.numberOfYears).toFixed(1)
       );
       element.minApparentTemperature = Number(
-        (element.minApparentTemperature / numberOfDays).toFixed(1)
+        (element.minApparentTemperature / this.numberOfYears).toFixed(1)
       );
       element.maxTemperature = Number(
-        (element.maxTemperature / numberOfDays).toFixed(1)
+        (element.maxTemperature / this.numberOfYears).toFixed(1)
       );
       element.minTemperature = Number(
-        (element.minTemperature / numberOfDays).toFixed(1)
+        (element.minTemperature / this.numberOfYears).toFixed(1)
       );
       element.snowProbability = Number(
-        (element.snowProbability / numberOfDays).toFixed(1)
+        (element.snowProbability / this.numberOfYears).toFixed(2)
       );
       element.rainProbability = Number(
-        (element.rainProbability / numberOfDays).toFixed(1)
+        (element.rainProbability / this.numberOfYears).toFixed(2)
       );
       element.weatherCode = this.setWeatherCode(
         weatherCodeAppearenceMap[element.date.getDate()]
@@ -197,7 +199,6 @@ export class WeatherService {
         resultCode = weatherCode;
       }
     });
-    console.log(resultCode);
     return resultCode;
   }
 
@@ -234,7 +235,7 @@ export class WeatherService {
   private getYearsArray() {
     const actualYear = new Date().getFullYear();
     const yearsArray = [];
-    for (let i = 1; i < 11; i++) {
+    for (let i = 1; i < this.numberOfYears + 1; i++) {
       yearsArray.push(actualYear - i);
     }
     return yearsArray;
