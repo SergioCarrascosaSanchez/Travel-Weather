@@ -89,7 +89,7 @@ export class WeatherService {
     );
   }
 
-  getCoordinates(city: string) {
+  private getCoordinates(city: string) {
     this.loading.next(true);
     return this.http
       .get<CoordinatesResponse[]>(`https://geocode.maps.co/search?q=${city}`)
@@ -105,7 +105,9 @@ export class WeatherService {
       );
   }
 
-  getAverages(dailyWeatherInfoArray: DailyWeatherInfo[][]): DailyWeatherInfo[] {
+  private getAverages(
+    dailyWeatherInfoArray: DailyWeatherInfo[][]
+  ): DailyWeatherInfo[] {
     const numberOfDays = dailyWeatherInfoArray[0].length;
     const initialDate = dailyWeatherInfoArray[0][0].date;
     let responseArray: DailyWeatherInfo[] = this.populateAveragesArray(
@@ -190,7 +192,7 @@ export class WeatherService {
     });
   }
 
-  setWeatherCode(elementObject) {
+  private setWeatherCode(elementObject) {
     let maxValue = -Infinity;
     let resultCode = null;
     Object.keys(elementObject).forEach((weatherCode) => {
