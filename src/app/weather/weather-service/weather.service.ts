@@ -57,24 +57,12 @@ export class WeatherService {
                 console.error('Error en solicitud HTTP:', error);
                 return of(null);
               }),
-              map((value) => {
+              map((value: WeatherResponse) => {
                 const processedResponse: DailyWeatherInfo[] = [];
                 for (let i = 0; i < value.daily.time.length; i++) {
-                  processedResponse.push({
-                    minTemperature: value.daily.temperature_2m_min[i],
-                    maxApparentTemperature:
-                      value.daily.apparent_temperature_max[i],
-                    minApparentTemperature:
-                      value.daily.apparent_temperature_min[i],
-                    maxTemperature: value.daily.temperature_2m_max[i],
-                    date: new Date(value.daily.time[i]),
-                    weatherCode: String(value.daily.weathercode[i]),
-                    rainProbability: value.daily.rain_sum[i],
-                    snowProbability: value.daily.snowfall_sum[i],
-                    weatherImage: this.setWeatherImage(
-                      value.daily.weathercode[i]
-                    ),
-                  });
+                  processedResponse.push(
+                    this.transformWeatherResponseToWeatherInfo(value, i)
+                  );
                 }
                 responses.push(processedResponse);
                 return processedResponse;
@@ -124,6 +112,23 @@ export class WeatherService {
           10
         )}&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,rain_sum,snowfall_sum,,apparent_temperature_max,apparent_temperature_min,weathercode`
     );
+  }
+
+  private transformWeatherResponseToWeatherInfo(
+    response: WeatherResponse,
+    i: number
+  ): DailyWeatherInfo {
+    return {
+      minTemperature: response.daily.temperature_2m_min[i],
+      maxApparentTemperature: response.daily.apparent_temperature_max[i],
+      minApparentTemperature: response.daily.apparent_temperature_min[i],
+      maxTemperature: response.daily.temperature_2m_max[i],
+      date: new Date(response.daily.time[i]),
+      weatherCode: String(response.daily.weathercode[i]),
+      rainProbability: response.daily.rain_sum[i],
+      snowProbability: response.daily.snowfall_sum[i],
+      weatherImage: this.setWeatherImage(response.daily.weathercode[i]),
+    };
   }
 
   private getAverageProcessedData(
@@ -245,15 +250,6 @@ export class WeatherService {
     if (code >= 90 && code < 100)
       return 'https://ssl.gstatic.com/onebox/weather/64/thunderstorms.png';
     return null;
-  }
-
-  private getYearsArray() {
-    const actualYear = new Date().getFullYear();
-    const yearsArray = [];
-    for (let i = 1; i < this.numberOfYears + 1; i++) {
-      yearsArray.push(actualYear - i);
-    }
-    return yearsArray;
   }
 
   private populateAveragesArray(
