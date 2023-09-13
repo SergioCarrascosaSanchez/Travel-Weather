@@ -69,7 +69,7 @@ export class WeatherService {
             );
           })
         ).pipe(
-          map(() => this.getAverages(responses)),
+          map(() => this.getAverageProcessedData(responses)),
           tap((info: DailyWeatherInfo[]) => {
             this.loading.next(false);
             this.setWeatherInfo(info);
@@ -113,7 +113,7 @@ export class WeatherService {
     );
   }
 
-  private getAverages(
+  private getAverageProcessedData(
     dailyWeatherInfoArray: DailyWeatherInfo[][]
   ): DailyWeatherInfo[] {
     const numberOfDays = dailyWeatherInfoArray[0].length;
