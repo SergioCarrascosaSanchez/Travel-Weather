@@ -23,6 +23,19 @@ export class WeatherService {
 
   constructor(private http: HttpClient) {}
 
+  setWeatherInfo(newWeatherInfo: DailyWeatherInfo[]) {
+    this.weatherInfo = newWeatherInfo;
+    this.weatherInfoChanged.next([...newWeatherInfo]);
+  }
+
+  getWeatherInfo() {
+    return [...this.weatherInfo];
+  }
+
+  getSpecificWeatherInfo(index: number) {
+    return this.weatherInfo[index];
+  }
+
   fetchWeatherData(city: string, startDate: Date, endDate: Date) {
     const responses: DailyWeatherInfo[][] = [];
 
@@ -217,20 +230,6 @@ export class WeatherService {
     });
     return resultCode;
   }
-
-  setWeatherInfo(newWeatherInfo: DailyWeatherInfo[]) {
-    this.weatherInfo = newWeatherInfo;
-    this.weatherInfoChanged.next([...newWeatherInfo]);
-  }
-
-  getWeatherInfo() {
-    return [...this.weatherInfo];
-  }
-
-  getSpecificWeatherInfo(index: number) {
-    return this.weatherInfo[index];
-  }
-
   private setWeatherImage(code: number) {
     if (code === 0 || code === 1) {
       return 'https://ssl.gstatic.com/onebox/weather/64/sunny.png';
